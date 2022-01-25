@@ -1,5 +1,5 @@
 //
-//  FilmDetailsViewController.swift
+//  DetailMovieViewController.swift
 //  MoviesApp
 //
 //  Created by Александр on 10.12.21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FilmDetailsViewController: UIViewController {
+class DetailMovieViewController: UIViewController {
     
     lazy var detailImage: MovieImageView = {
         let imageView = MovieImageView()
@@ -37,7 +37,7 @@ class FilmDetailsViewController: UIViewController {
     lazy var imdbRatingLabel = setupLabels(ofSize: 14)
     
     var film: Film!
-    var viewModel: FilmDetailViewModelProtocol! {
+    var viewModel: DetailMovieViewModelProtocol! {
         didSet {
             titleLabel.text = viewModel.title
             descriptionLabel.text = viewModel.description
@@ -110,7 +110,7 @@ class FilmDetailsViewController: UIViewController {
     }
 }
 
-extension FilmDetailsViewController {
+extension DetailMovieViewController {
     private func setupLabels(ofSize: CGFloat, numberOfLines: Int? = 2) -> UILabel {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false

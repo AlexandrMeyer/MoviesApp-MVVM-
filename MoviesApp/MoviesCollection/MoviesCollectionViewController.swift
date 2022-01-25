@@ -74,7 +74,7 @@ class MoviesCollectionViewController: UICollectionViewController {
     
     // MARK: - Navigation
     private func openDetailMovie() {
-        let detailMovieViewController = FilmDetailsViewController()
+        let detailMovieViewController = DetailMovieViewController()
         guard let indexPath = collectionView.indexPath(for: MovieCollectionViewCell()) else { return }
         let film = viewModel.getFilmAt(indexPath)
         detailMovieViewController.film = film
@@ -101,7 +101,7 @@ extension MoviesCollectionViewController {
 // MARK: - UITableViewDelegate
 extension MoviesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailMovieViewController = FilmDetailsViewController()
+        let detailMovieViewController = DetailMovieViewController()
         let film = viewModel.getFilmAt(indexPath)
         detailMovieViewController.film = film
         
