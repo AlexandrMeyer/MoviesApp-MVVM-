@@ -12,20 +12,15 @@ private let reuseIdentifier = "Cell"
 class MoviesCollectionViewController: UICollectionViewController {
     
     private var movies: Movies?
-    private var filteredFilm: [Film] = []
+    private var filteredFilms: [Film] = []
     
-    private let searchController: UISearchController = {
-        let searchController = UISearchController(searchResultsController: nil)
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        return searchController
-    }()
-    
-    private var searchBarIsEmpty: Bool {
-        guard let text = searchController.searchBar.text else { return false }
-        return text.isEmpty
-    }
-    private var isFiltering: Bool {
-        searchController.isActive && !searchBarIsEmpty
+    var viewModel: MoviesCollectionViewModelProtocol! {
+        didSet {
+            viewModel.fetchMovies {
+                self.collectionView.reloadData()
+                self.activityIndicator?.stopAnimating()
+            }
+        }
     }
     
     let itemsPerRow: CGFloat = 3
@@ -43,11 +38,11 @@ class MoviesCollectionViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel = MoviesCollectionViewModel()
         activityIndicator = showActivityIndicator(in: view)
         setupNavigationBar()
         collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         collectionView.backgroundColor = .black
-        fetchMoviesInfo()
         setupSearchController()
     }
     
@@ -79,50 +74,25 @@ class MoviesCollectionViewController: UICollectionViewController {
     
     // MARK: - Navigation
     private func openDetailMovie() {
-        let detailMovieViewController = DetailMovieViewController()
+        let detailMovieViewController = FilmDetailsViewController()
         guard let indexPath = collectionView.indexPath(for: MovieCollectionViewCell()) else { return }
-        let film = isFiltering ? filteredFilm[indexPath.item] : movies?.movies[indexPath.item]
+        let film = viewModel.getFilmAt(indexPath)
         detailMovieViewController.film = film
         
         navigationController?.pushViewController(detailMovieViewController, animated: true)
-    }
-    
-    private func setupSearchController() {
-        navigationItem.searchController = searchController
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.automaticallyShowsSearchResultsController = true
-        searchController.searchBar.placeholder = "Search"
-        definesPresentationContext = true
-    }
-    
-    private func fetchMoviesInfo() {
-        NetworkManager.shared.fetchMoviesInfo { [unowned self] result in
-            switch result {
-            case .success(let movie):
-                DispatchQueue.main.async {
-                    movies = movie
-                    activityIndicator?.stopAnimating()
-                    collectionView.reloadData()
-                }
-            case .failure(let error):
-                print (error)
-            }
-        }
     }
 }
 
 // MARK: UICollectionViewDataSource
 extension MoviesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        isFiltering ? filteredFilm.count : movies?.movies.count ?? 0
+        viewModel.numberOfItems()
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! MovieCollectionViewCell
         
-        let movie = isFiltering ? filteredFilm[indexPath.item] : movies?.movies[indexPath.item]
-        cell.configure(with: movie)
+        cell.viewModel = viewModel.cellViewMode(at: indexPath)
         
         return cell
     }
@@ -131,8 +101,8 @@ extension MoviesCollectionViewController {
 // MARK: - UITableViewDelegate
 extension MoviesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailMovieViewController = DetailMovieViewController()
-        let film = isFiltering ? filteredFilm[indexPath.item] : movies?.movies[indexPath.item]
+        let detailMovieViewController = FilmDetailsViewController()
+        let film = viewModel.getFilmAt(indexPath)
         detailMovieViewController.film = film
         
         navigationController?.pushViewController(detailMovieViewController, animated: true)
@@ -173,10 +143,17 @@ extension MoviesCollectionViewController: UISearchResultsUpdating {
     }
     
     private func filterContentForSearchText(_ searchText: String) {
-        filteredFilm = movies?.movies.filter { film in
-            (film.titleEn ?? film.title).lowercased().contains(searchText.lowercased())
-        } ?? []
-        
-        collectionView.reloadData()
+        viewModel.filterContentForSearchText(searchText) { [weak self] in
+            self?.collectionView.reloadData()
+        }
+    }
+    
+    private func setupSearchController() {
+        navigationItem.searchController = SearchController.shared.searchController
+        SearchController.shared.searchController.searchResultsUpdater = self
+        SearchController.shared.searchController.obscuresBackgroundDuringPresentation = false
+        SearchController.shared.searchController.automaticallyShowsSearchResultsController = true
+        SearchController.shared.searchController.searchBar.placeholder = "Search"
+        definesPresentationContext = true
     }
 }

@@ -27,6 +27,14 @@ class MovieCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    var viewModel: MoviesCellViewModelProtocol! {
+        didSet {
+            descriptionLabel.text = viewModel.descriptionLabel
+            guard let stringURL = viewModel.posterImage else { return }
+            posterImage.fetchImage(from: stringURL)
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(posterImage)
@@ -54,14 +62,5 @@ class MovieCollectionViewCell: UICollectionViewCell {
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5)
         ])
-    }
-    
-    func configure(with film: Film?) {
-       descriptionLabel.text = """
-\(film?.titleEn ?? "\(film?.title ?? "")")
-\(film?.year ?? 0) \(film?.genres?.first ?? "")
-"""
-        guard let stringURL = film?.poster else { return }
-        posterImage.fetchImage(from: stringURL)
     }
 }

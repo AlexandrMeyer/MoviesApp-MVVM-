@@ -8,7 +8,24 @@
 import UIKit
 
 class MovieImageView: UIImageView {
+    
+    static let shared = MovieImageView()
+    
+    func fetchImageData(from url: String?) -> Data? {
+        
+        guard let url = url else { return nil }
+        guard let url = URL(string: "https:\(url)") else {
+            image = UIImage(systemName: "photo")
+            return nil
+        }
+
+        guard let imageData = try? Data(contentsOf: url) else { return nil }
+        
+        return imageData
+    }
+    
     func fetchImage(from url: String) {
+        
         guard let url = URL(string: "https:\(url)") else {
             image = UIImage(systemName: "photo")
             return
@@ -38,6 +55,15 @@ class MovieImageView: UIImageView {
         let request = URLRequest(url: url)
         if let cachedResponse = URLCache.shared.cachedResponse(for: request) {
             return UIImage(data: cachedResponse.data)
+        }
+        return nil
+    }
+    
+    
+    private func getCachedData(from url: URL) -> Data? {
+        let request = URLRequest(url: url)
+        if let cachedResponse = URLCache.shared.cachedResponse(for: request) {
+            return cachedResponse.data
         }
         return nil
     }
