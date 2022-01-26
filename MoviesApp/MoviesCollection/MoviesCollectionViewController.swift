@@ -11,8 +11,8 @@ private let reuseIdentifier = "Cell"
 
 class MoviesCollectionViewController: UICollectionViewController {
     
-    private var movies: Movies?
-    private var filteredFilms: [Film] = []
+    let itemsPerRow: CGFloat = 3
+    let sectionInserts = UIEdgeInsets(top: 10, left: 10, bottom: 25, right: 10)
     
     var viewModel: MoviesCollectionViewModelProtocol! {
         didSet {
@@ -22,9 +22,6 @@ class MoviesCollectionViewController: UICollectionViewController {
             }
         }
     }
-    
-    let itemsPerRow: CGFloat = 3
-    let sectionInserts = UIEdgeInsets(top: 10, left: 10, bottom: 25, right: 10)
     
     private var activityIndicator: UIActivityIndicatorView?
     
@@ -59,6 +56,7 @@ class MoviesCollectionViewController: UICollectionViewController {
         view.addSubview(activityIndicator)
         return activityIndicator
     }
+    
     private func setupNavigationBar() {
         title = "Movies List"
         
@@ -70,16 +68,6 @@ class MoviesCollectionViewController: UICollectionViewController {
         
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-    }
-    
-    // MARK: - Navigation
-    private func openDetailMovie() {
-        let detailMovieViewController = DetailMovieViewController()
-        guard let indexPath = collectionView.indexPath(for: MovieCollectionViewCell()) else { return }
-        let film = viewModel.getFilmAt(indexPath)
-        detailMovieViewController.film = film
-        
-        navigationController?.pushViewController(detailMovieViewController, animated: true)
     }
 }
 
@@ -101,11 +89,10 @@ extension MoviesCollectionViewController {
 // MARK: - UITableViewDelegate
 extension MoviesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let detailMovieViewController = DetailMovieViewController()
-        let film = viewModel.getFilmAt(indexPath)
-        detailMovieViewController.film = film
-        
-        navigationController?.pushViewController(detailMovieViewController, animated: true)
+        let detailMovieVC = FilmDetailsViewController()
+        let detailsVM = viewModel.detailsViewModel(at: indexPath)
+        detailMovieVC.viewModel = detailsVM
+        navigationController?.pushViewController(detailMovieVC, animated: true)
     }
 }
 

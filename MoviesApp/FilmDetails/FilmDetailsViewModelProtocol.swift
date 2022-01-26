@@ -1,5 +1,5 @@
 //
-//  DetailMovieViewModelProtocol.swift
+//  FilmDetailsViewModelProtocol.swift
 //  MoviesApp
 //
 //  Created by Александр on 11.12.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DetailMovieViewModelProtocol {
+protocol FilmDetailsViewModelProtocol {
     var title: String { get }
     var kinopoiskRating: String? { get }
     var imdbRating: String? { get }
@@ -21,8 +21,7 @@ protocol DetailMovieViewModelProtocol {
     func addToWatchlistButtonTapped()
 }
 
-class FilmDetailViewModel: DetailMovieViewModelProtocol {
-    
+class FilmDetailsViewModel: FilmDetailsViewModelProtocol {
     
     var title: String {
         film.titleEn ?? film.title

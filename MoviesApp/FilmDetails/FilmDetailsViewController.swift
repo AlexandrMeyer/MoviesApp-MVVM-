@@ -1,5 +1,5 @@
 //
-//  DetailMovieViewController.swift
+//  FilmDetailsViewController.swift
 //  MoviesApp
 //
 //  Created by Александр on 10.12.21.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-class DetailMovieViewController: UIViewController {
+class FilmDetailsViewController: UIViewController {
     
-    lazy var detailImage: MovieImageView = {
+    private lazy var detailImage: MovieImageView = {
         let imageView = MovieImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
@@ -28,16 +28,15 @@ class DetailMovieViewController: UIViewController {
         return button
     }()
     
-    lazy var titleLabel = setupLabels(ofSize: 20)
-    lazy var descriptionLabel = setupLabels(ofSize: 14, numberOfLines: 3)
-    lazy var yearLabel = setupLabels(ofSize: 14)
-    lazy var actorsLabel = setupLabels(ofSize: 14, numberOfLines: 2)
-    lazy var directorLabel = setupLabels(ofSize: 14)
-    lazy var kinopoiskRatingLabel = setupLabels(ofSize: 14)
-    lazy var imdbRatingLabel = setupLabels(ofSize: 14)
+    private lazy var titleLabel = setupLabels(ofSize: 20)
+    private lazy var descriptionLabel = setupLabels(ofSize: 14, numberOfLines: 3)
+    private lazy var yearLabel = setupLabels(ofSize: 14)
+    private lazy var actorsLabel = setupLabels(ofSize: 14, numberOfLines: 2)
+    private lazy var directorLabel = setupLabels(ofSize: 14)
+    private lazy var kinopoiskRatingLabel = setupLabels(ofSize: 14)
+    private lazy var imdbRatingLabel = setupLabels(ofSize: 14)
     
-    var film: Film!
-    var viewModel: DetailMovieViewModelProtocol! {
+    var viewModel: FilmDetailsViewModelProtocol! {
         didSet {
             titleLabel.text = viewModel.title
             descriptionLabel.text = viewModel.description
@@ -58,8 +57,6 @@ class DetailMovieViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black
         navigationItem.largeTitleDisplayMode = .never
-        
-        viewModel = FilmDetailViewModel(film: film)
         
         setupNavigationBar()
         setupSubViews(
@@ -110,7 +107,7 @@ class DetailMovieViewController: UIViewController {
     }
 }
 
-extension DetailMovieViewController {
+extension FilmDetailsViewController {
     private func setupLabels(ofSize: CGFloat, numberOfLines: Int? = 2) -> UILabel {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false

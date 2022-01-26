@@ -8,22 +8,20 @@
 import Foundation
 
 protocol MoviesCollectionViewModelProtocol {
-    var movies: Movies? { get }
     var isFiltering: Bool { get }
-    var filteredFilms: [Film] { get }
     var viewModelDidChange: ((MoviesCollectionViewModelProtocol) -> Void)? { get set }
     func fetchMovies(completion: @escaping() -> Void)
     func filterContentForSearchText(_ searchText: String, completion: @escaping() -> Void)
     func numberOfItems() -> Int
     func getFilmAt(_ indexPath: IndexPath) -> Film?
     func cellViewMode(at indexPath: IndexPath) -> MoviesCellViewModelProtocol
+    func detailsViewModel(at indexPath: IndexPath) -> FilmDetailsViewModelProtocol
 }
 
 class MoviesCollectionViewModel: MoviesCollectionViewModelProtocol {
     
-    var movies: Movies?
-    
-    var filteredFilms: [Film] = []
+    private var movies: Movies?
+    private var filteredFilms: [Film] = []
     
     var isFiltering: Bool {
         SearchController.shared.searchController.isActive && !SearchController.shared.searchBarIsEmpty
@@ -61,5 +59,10 @@ class MoviesCollectionViewModel: MoviesCollectionViewModelProtocol {
     func cellViewMode(at indexPath: IndexPath) -> MoviesCellViewModelProtocol {
         let film = getFilmAt(indexPath)
         return MoviesCellViewModel(film: film)
+    }
+    
+    func detailsViewModel(at indexPath: IndexPath) -> FilmDetailsViewModelProtocol {
+        let film = getFilmAt(indexPath)
+        return FilmDetailsViewModel(film: film!)
     }
 }

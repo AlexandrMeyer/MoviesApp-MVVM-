@@ -9,7 +9,7 @@ import UIKit
 
 class MovieCollectionViewCell: UICollectionViewCell {
     
-    let posterImage: MovieImageView = {
+    private lazy var posterImage: MovieImageView = {
         let imageView = MovieImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -18,7 +18,7 @@ class MovieCollectionViewCell: UICollectionViewCell {
         return imageView
     }()
     
-    let descriptionLabel: UILabel = {
+    private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 4
