@@ -176,8 +176,8 @@
 		B52DCC3E27A058C90032F777 /* Watchlist */ = {
 			isa = PBXGroup;
 			children = (
-				B52146E2276F74CE000D774F /* WatchlistTableViewController.swift */,
 				B52DCC4527A05A100032F777 /* WatchlistViewModel.swift */,
+				B52146E2276F74CE000D774F /* WatchlistTableViewController.swift */,
 				B52DCC3F27A059370032F777 /* ViewCell */,
 			);
 			path = Watchlist;
@@ -186,8 +186,8 @@
 		B52DCC3F27A059370032F777 /* ViewCell */ = {
 			isa = PBXGroup;
 			children = (
-				B52146E4276F765C000D774F /* WatchlistTableViewCell.swift */,
 				B52DCC4127A059CC0032F777 /* WatchlistCellViewModel.swift */,
+				B52146E4276F765C000D774F /* WatchlistTableViewCell.swift */,
 			);
 			path = ViewCell;
 			sourceTree = "<group>";

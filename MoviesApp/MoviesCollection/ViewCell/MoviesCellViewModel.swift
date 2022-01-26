@@ -8,15 +8,15 @@
 import Foundation
 
 protocol MoviesCellViewModelProtocol {
-    var posterImage: String? { get }
+    var posterData: Data? { get }
     var descriptionLabel: String { get }
     init(film: Film?)
 }
 
 class MoviesCellViewModel: MoviesCellViewModelProtocol {
     
-    var posterImage: String? {
-        film?.poster
+    var posterData: Data? {
+        ImageManager.shared.fetchImageData(from: film?.poster)
     }
     
     var descriptionLabel: String {

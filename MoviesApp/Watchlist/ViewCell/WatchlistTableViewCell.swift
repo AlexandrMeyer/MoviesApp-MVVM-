@@ -33,6 +33,15 @@ class WatchlistTableViewCell: UITableViewCell {
         return descriptionLabel
     }()
     
+    var viewModel: WatchlistCellViewModelProtocol! {
+        didSet {
+            titleLabel.text = viewModel.title
+            descriptionLabel.text = viewModel.description
+            guard let imageData = viewModel.image else { return }
+            movieImage.image = UIImage(data: imageData)
+        }
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupSubViews(movieImage, titleLabel, descriptionLabel)
@@ -40,7 +49,7 @@ class WatchlistTableViewCell: UITableViewCell {
         setTitleLabelConstraints()
         setDescriptionLabelConstraints()
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -74,13 +83,6 @@ class WatchlistTableViewCell: UITableViewCell {
             descriptionLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 10),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0)
         ])
-    }
-    
-    func configure(with movie: SaveMovie?) {
-        titleLabel.text = movie?.title
-        descriptionLabel.text = "Kinopoisk: \(movie?.kinopoiskRating ?? "") IMDB: \(movie?.imdbRating ?? "")"
-        guard let stringURL = movie?.poster else { return }
-        movieImage.fetchImage(from: stringURL)
     }
 }
 

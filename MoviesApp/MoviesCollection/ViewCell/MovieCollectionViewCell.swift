@@ -30,8 +30,8 @@ class MovieCollectionViewCell: UICollectionViewCell {
     var viewModel: MoviesCellViewModelProtocol! {
         didSet {
             descriptionLabel.text = viewModel.descriptionLabel
-            guard let stringURL = viewModel.posterImage else { return }
-            posterImage.fetchImage(from: stringURL)
+            guard let imageData = viewModel.posterData else { return }
+            posterImage.image = UIImage(data: imageData)
         }
     }
     

@@ -16,7 +16,7 @@ class ImageManager {
     func fetchImageData(from url: String?) -> Data? {
         guard let url = URL(string: "https:\(url ?? "")") else { return nil }
         guard let imageData = try? Data(contentsOf: url) else { return nil }
-        
+
         return imageData
     }
 }

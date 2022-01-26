@@ -11,20 +11,25 @@ class WatchlistTableViewController: UITableViewController {
     
     private let reuseIdentifier = "Cell"
     
-    private var movies: [SaveMovie] = []
+    var viewModel: WatchlistViewModelProtocol! {
+        didSet {
+            viewModel.fetchMovies { [unowned self] in
+                self.tableView.reloadData()
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel = WatchlistViewModel()
         tableView.register(WatchlistTableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         setupNavigationBar()
         tableView.backgroundColor = .black
         navigationItem.leftBarButtonItem = editButtonItem
-        fetchData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchData()
         tableView.reloadData()
     }
     
@@ -39,31 +44,18 @@ class WatchlistTableViewController: UITableViewController {
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
     }
-    
-    private func fetchData() {
-        StorageManager.shared.fetchData { result in
-            switch result {
-            case .success(let movies):
-                self.movies = movies
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-            tableView.reloadData()
-        }
-    }
 }
 
 // MARK: - Table view data source
 extension WatchlistTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        movies.count
+        viewModel.numberOfRows()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! WatchlistTableViewCell
         
-        let imageName = movies[indexPath.row]
-        cell.configure(with: imageName)
+        cell.viewModel = viewModel.sellViewModel(at: indexPath)
         cell.backgroundColor = .black
         return cell
     }
@@ -78,11 +70,8 @@ extension WatchlistTableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
-        let movie = movies[indexPath.row]
-        
         if editingStyle == .delete {
-            movies.remove(at: indexPath.row)
-            StorageManager.shared.delete(movie)
+            viewModel.deleateSaveMovie(at: indexPath)
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }

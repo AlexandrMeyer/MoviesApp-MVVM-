@@ -14,7 +14,7 @@ class MoviesCollectionViewController: UICollectionViewController {
     let itemsPerRow: CGFloat = 3
     let sectionInserts = UIEdgeInsets(top: 10, left: 10, bottom: 25, right: 10)
     
-    var viewModel: MoviesCollectionViewModelProtocol! {
+    private var viewModel: MoviesCollectionViewModelProtocol! {
         didSet {
             viewModel.fetchMovies {
                 self.collectionView.reloadData()
